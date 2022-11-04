@@ -1,5 +1,5 @@
 #define DELAY 100000
-#define max_x 1
+#define max_x 15
 #define max_y 60
 #define max_l (max_x * max_y)
 
