@@ -1,0 +1,17 @@
+
+   *========WELCOME TO C-SNAKE==========*
+   | C-Snake is the final project of    |
+   | a humble 2nd year CS student named |
+   | Aiden Manuel. You can play classic |
+   | snake, or crank up the excitement  |
+   | with one of the other custome game |
+   | modes! Check out your high scores  |
+   | in the scoreboard section, to see  |
+   | who is the best player.            |
+   |                                    |
+   |            CONTROLS:               |
+   |    MENU/SNAKE          WASD        |
+   |    SELECT              ENTER       |
+   |                                    |
+   |HAVE FUN AND LET ME KNOW OF ANY BUGS|
+   *====================================*
