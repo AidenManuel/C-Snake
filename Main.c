@@ -8,6 +8,11 @@
 #include "Animations.c"
 #define DELAY 100000
 #define BigDELAY 400000
+#define SNAKE 1
+#define FOOD 2
+#define SPEED1 1
+#define SPEED2 3
+#define SPEED3 4
 #define max_x 15
 #define max_y 60
 
@@ -32,13 +37,25 @@
 ///// CURSER INIT /////
 
 void initBruv() {  // Initializes all necessary curser things and madoodles
-   initscr();
-   noecho();
-   curs_set(FALSE);
-   cbreak();              // I genuinely don't know what most of these do, I just
-   nodelay(stdscr, TRUE); // took them off of Dr. Kim's class example ¯\_(ツ)_/¯
-   raw();
-   keypad(stdscr, TRUE);
+    initscr();
+    noecho();
+    curs_set(FALSE);
+    cbreak();              // I genuinely don't know what most of these do, I just
+    nodelay(stdscr, TRUE); // took them off of Dr. Kim's class example ¯\_(ツ)_/¯
+    raw();
+    keypad(stdscr, TRUE);
+
+    if (has_colors() == FALSE) {
+        endwin();
+        printf("Your terminal does not support color\n");
+        exit(1);
+    }
+
+    start_color();
+    init_pair(SNAKE, COLOR_GREEN, COLOR_GREEN);
+    init_pair(FOOD, COLOR_RED, COLOR_BLACK);
+    init_pair(SPEED2, COLOR_BLUE, COLOR_BLUE);
+    init_pair(SPEED3, COLOR_RED, COLOR_RED);
 }
 
 ///// MAIN METHOD /////
@@ -50,7 +67,7 @@ int main() {
     FILE* fp = fopen("scores.txt", "w");
     fseek(fp, 0, SEEK_END);
     if (ftell(fp) == 0)
-        fprintf(fp, "\t._______________________________.\n\t|    INITIALS   |     SCORE     |");
+        fprintf(fp, "\n   INITIALS       SCORE     ");
     fclose(fp);
 
     // Curses Init
@@ -65,7 +82,9 @@ int main() {
         switch(choice) {
             case 1:
                 int l = mainLoop();
+                usleep(DELAY);
                 mvprintw(max_x / 2, max_y / 2 - 3, "D E A D");
+                mvprintw(max_x / 2 + 1, max_y / 2 - 12, "press ANY KEY to continue");
                 refresh();
                 fp = gameOver(l, fp);
                 break;

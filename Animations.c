@@ -14,7 +14,6 @@ void drawSnake(int x[], int y[], int l) {
    } 
    if(l>2)
      mvprintw(x[l-1], y[l-1], "."); // tail of snake
-       refresh();
 }
 
 ///// INTRO ANIMATION /////
@@ -53,7 +52,7 @@ void introAnimation(){
 	      dx = 0;
 	      dy = -2;
 	   }
-	   if(anim_inc == 28){
+	   if(anim_inc == 29){
 	      usleep(DELAY);
 	      break;
 	   }
@@ -62,6 +61,7 @@ void introAnimation(){
 	   sy += dy;
 	   
 	   anim_inc++;
+	   refresh();
    }
    anim_inc = 0;
 }

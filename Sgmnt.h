@@ -3,6 +3,7 @@ struct Sgmnt {
     int y;
 
     struct Sgmnt *next;
+    struct Sgmnt *prev;
 };
 
 void delTail(struct Sgmnt** head) {
@@ -19,7 +20,15 @@ void delTail(struct Sgmnt** head) {
         temp = temp->next;
     }
 
-    temp = NULL;
+    struct Sgmnt* secondLast = temp->prev;
+
+    int deadx, deady;
+    deadx = secondLast->next->x;
+    deady = secondLast->next->y;
+    mvprintw(deadx, deady, "  ");
+
+
+    secondLast->next = NULL;
     
     free(temp);
     return;
@@ -35,6 +44,11 @@ struct Sgmnt* slither(struct Sgmnt** head, int new_x, int new_y) {
  
     // 3. Make next of new node as head and previous as NULL
     new_head->next = (*head);
+    new_head->prev = NULL;
+ 
+    // 4. change prev of head node to new node
+    if ((*head) != NULL)
+        (*head)->prev = new_head;
  
     // 5. move the head to point to the new node
     (*head) = new_head;
@@ -45,18 +59,22 @@ struct Sgmnt* slither(struct Sgmnt** head, int new_x, int new_y) {
 }
 
 struct Sgmnt* eat(struct Sgmnt** head, int new_x, int new_y) {
-    /* 1. allocate node */
+    // 1. allocate node
     struct Sgmnt* new_head = (struct Sgmnt*)malloc(sizeof(struct Sgmnt));
  
-    /* 2. put in the data  */
+    // 2. put in the data
     new_head->x = new_x;
     new_head->y = new_y;
  
-    /* 3. Make next of new node as head and previous as NULL
-     */
+    // 3. Make next of new node as head and previous as NULL
     new_head->next = (*head);
+    new_head->prev = NULL;
  
-    /* 5. move the head to point to the new node */
+    // 4. change prev of head node to new node
+    if ((*head) != NULL)
+        (*head)->prev = new_head;
+ 
+    // 5. move the head to point to the new node 
     (*head) = new_head;
     return new_head;
 }
@@ -64,7 +82,8 @@ struct Sgmnt* eat(struct Sgmnt** head, int new_x, int new_y) {
 int draw(struct Sgmnt* head) {
     int count = 0;
     while (head != NULL) {
-        mvprintw((head)->x, (head)->y, "S");
+        mvaddch((head)->x, (head)->y, ACS_CKBOARD);
+        mvaddch((head)->x, (head)->y + 1, ACS_CKBOARD);
         head = (head)->next;
         count += 100;
     }
