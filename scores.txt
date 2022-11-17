@@ -1,3 +1,9 @@
 
-   INITIALS       SCORE     
-                400
+   aA             900
+   AM             200
+   as             1600
+   as             400
+   am             500
+   ss             100
+   ss             100
+   AM             100

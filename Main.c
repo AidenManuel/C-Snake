@@ -13,8 +13,10 @@
 #define SPEED1 1
 #define SPEED2 3
 #define SPEED3 4
-#define max_x 15
-#define max_y 60
+#define min_x 3
+#define min_y 4
+#define max_x 17
+#define max_y 64
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //    ___                    _                       ___                     _             //
@@ -56,6 +58,8 @@ void initBruv() {  // Initializes all necessary curser things and madoodles
     init_pair(FOOD, COLOR_RED, COLOR_BLACK);
     init_pair(SPEED2, COLOR_BLUE, COLOR_BLUE);
     init_pair(SPEED3, COLOR_RED, COLOR_RED);
+    init_pair(5, COLOR_MAGENTA, COLOR_MAGENTA);
+    init_pair(6, COLOR_CYAN, COLOR_CYAN);
 }
 
 ///// MAIN METHOD /////
@@ -64,10 +68,7 @@ int main() {
     int choice;
 
     // Creating Scores File
-    FILE* fp = fopen("scores.txt", "w");
-    fseek(fp, 0, SEEK_END);
-    if (ftell(fp) == 0)
-        fprintf(fp, "\n   INITIALS       SCORE     ");
+    FILE* fp = fopen("scores.txt", "rw");
     fclose(fp);
 
     // Curses Init

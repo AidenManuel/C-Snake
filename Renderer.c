@@ -1,40 +1,65 @@
 #define DELAY 100000
-#define max_x 15
-#define max_y 60
-#define max_l (max_x * max_y)
 #define SNAKE 1
 #define FOOD 2
 #define SPEED1 1
 #define SPEED2 3
 #define SPEED3 4
+#define min_x 0
+#define min_y 0
+#define max_x 15
+#define max_y 60
+#define max_l (max_x * max_y)
 
 int choice = 0, selector = 8;
+
+///// DRAW MAIN BORDER /////
+
+void mainBorder() {
+    mvaddch(0, 0, ACS_ULCORNER);
+    for(int y = 1; y < 80; y++){
+        mvaddch(0, y, ACS_HLINE);              // top border
+    }
+    mvaddch(0, 80, ACS_URCORNER);
+
+    for(int x = 1; x < 20; x++){
+        mvaddch(x, 0, ACS_VLINE);             // side walls
+        mvaddch(x, 80, ACS_VLINE);
+    }
+
+    mvaddch(20, 0, ACS_LLCORNER);
+    for(int y = 1; y < 80; y++){
+        mvaddch(20, y, ACS_HLINE);   // bottom border
+    }
+    mvaddch(20, 80, ACS_LRCORNER);
+    refresh();
+}
 
 ///// DRAW MENU /////
 
 int drawMenu() {
    clear();
-   mvprintw(1, 1, " C C C       s s .   N     N     A     K   K   E E E  ");
-   mvprintw(2, 1, " C           s       N N   N   A   A   K   K   E      ");
-   mvprintw(3, 1, " C           s s s   N   N N   A A A   K K     E E    ");
-   mvprintw(4, 1, " C               s   N     N   A   A   K   K   E      ");
-   mvprintw(5, 1, " C C C   .   S s s   N     N   A   A   K   K   E E E  ");
-   mvprintw(8, 1, "                    MODE  SELECT");
-   mvprintw(10, 1, "                     SCOREBOARD");
-   mvprintw(12, 1, "                    INSTRUCTIONS");
-   mvprintw(14, 1, "                        QUIT");
+   mainBorder();
+   mvprintw(1, 13, " C C C       s s .   N     N     A     K   K   E E E  ");
+   mvprintw(2, 13, " C           s       N N   N   A   A   K   K   E      ");
+   mvprintw(3, 13, " C           s s s   N   N N   A A A   K K     E E    ");
+   mvprintw(4, 13, " C               s   N     N   A   A   K   K   E      ");
+   mvprintw(5, 13, " C C C   .   S s s   N     N   A   A   K   K   E E E  ");
+   mvprintw(8, 13, "                    MODE  SELECT");
+   mvprintw(10, 13, "                     SCOREBOARD");
+   mvprintw(12, 13, "                    INSTRUCTIONS");
+   mvprintw(14, 13, "                        QUIT");
    while(choice == 0){
-   	mvprintw(selector, 15, "*");
+   	mvprintw(selector, 28, "*");
    	switch(getch()) {
    	   case 'w':
 	         if(selector != 8){
-               mvprintw(selector, 15, " ");
+               mvprintw(selector, 28, " ");
                selector -= 2;
             }
    	      break;
    	   case 's':
    	      if(selector != 14){
-               mvprintw(selector, 15, " ");
+               mvprintw(selector, 28, " ");
    	         selector +=2;
             }
    	      break;
@@ -106,6 +131,34 @@ void drawMeter(int x, int y, int diff){
     }
 }
 
+void drawTurboMeter(int x, int y, bool alternator){
+    drawBorder("TURBO", x, x+10, y, y+3);
+    if(alternator){
+        for(int i = 9; i > 2; i-=2){
+            attron(COLOR_PAIR(5));
+            mvaddch(x + i, y + 1, ACS_CKBOARD);
+            mvaddch(x + i, y + 2, ACS_CKBOARD);
+            attroff(COLOR_PAIR(5));
+            attron(COLOR_PAIR(6));
+            mvaddch(x + i - 1, y + 1, ACS_CKBOARD);
+            mvaddch(x + i - 1, y + 2, ACS_CKBOARD);
+            attroff(COLOR_PAIR(6));
+        }
+    } else {
+        for(int i = 9; i > 2; i-=2){
+            attron(COLOR_PAIR(6));
+            mvaddch(x + i, y + 1, ACS_CKBOARD);
+            mvaddch(x + i, y + 2, ACS_CKBOARD);
+            attroff(COLOR_PAIR(6));
+            attron(COLOR_PAIR(5));
+            mvaddch(x + i - 1, y + 1, ACS_CKBOARD);
+            mvaddch(x + i - 1, y + 2, ACS_CKBOARD);
+            attroff(COLOR_PAIR(5));
+        }
+    }
+
+}
+
 ///// GAME OVER /////
 
 FILE* gameOver(int score, FILE* fp) {
@@ -113,6 +166,7 @@ FILE* gameOver(int score, FILE* fp) {
     int i = 0;
     clear();
     getchar();
+    mainBorder();
     mvprintw(max_x/2 - 2, 3, "G G G    A    M       M  E E E       O     V   V   E E E   R R");
     mvprintw(max_x/2 - 1, 3, "G      A   A  M M   M M  E         O   O   V   V   E       R   R");
     mvprintw(max_x/2, 3,     "G      A A A  M   M   M  E E       O   O   V   V   E E     R R ");
@@ -124,8 +178,7 @@ FILE* gameOver(int score, FILE* fp) {
 
     while(i < 2) {
         temp = getchar();
-        if(temp == 13){
-            mvprintw(0, 0, "%c-", temp);
+        if(temp != 13){
             refresh();
             initials[i] = temp;
             i++;
@@ -137,8 +190,8 @@ FILE* gameOver(int score, FILE* fp) {
     refresh();
 
     fp = fopen("scores.txt", "a");
-    char buf[BUFSIZ];
     fprintf(fp, "\n   %s             %d", initials, score - 100);
+
     fclose(fp);
 
     getchar();
@@ -148,18 +201,20 @@ FILE* gameOver(int score, FILE* fp) {
 ///// DRAW SCOREBOARD /////
 
 void scoreboard(FILE* f) {
-    int sx1 = 3, sx2 = sx1+1, sy1 = 10, sy2 = sy1+30;
+    int sx1 = 3, sx2 = sx1+1, sy1 = 25, sy2 = sy1+30;
 
     clear();
     char str[250];
     f = fopen("scores.txt", "rw");
-    while(fgets(str, 250, f) != NULL){
+    while(fgets(str, 250, f) != NULL && sx2 < 19){
             mvprintw(sx2, sy1, "%s", str);
         sx2++;
     }
     drawBorder("SCORES", sx1, sx2, sy1, sy2);
     refresh();
     fclose(f);
+
+    mainBorder();
 
     getchar();
 }
@@ -169,14 +224,17 @@ void scoreboard(FILE* f) {
 void instructions() {
     int count = 1;
     clear();
+    mainBorder();
     char str[1000];
     FILE* f = fopen("instructions.txt", "r");
     while(fgets(str, 1000, f) != NULL){
-            mvprintw(count, 0, "%s", str);
+            mvprintw(count, 22, "%s", str);
         count++;
     }
     refresh();
     fclose(f);
+
+    mainBorder();
 
     getchar();
 }

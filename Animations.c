@@ -3,7 +3,7 @@
 #define max_y 60
 #define max_l (max_x * max_y)
 
-int anim_inc = 0, sx = 1, sy = 54, x[max_l], y[max_l], l = 0, dx = 0, dy = -2;
+int anim_inc = 0, sx = 1, sy = 66, x[max_l], y[max_l], l = 0, dx = 0, dy = -2;
 
 ///// DRAW SNAKE /////
 
