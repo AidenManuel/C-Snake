@@ -10,7 +10,7 @@
 #define max_y 60
 #define max_l (max_x * max_y)
 
-int choice = 0, selector = 8;
+int choice = 0, selector, flavour;
 
 ///// DRAW MAIN BORDER /////
 
@@ -37,6 +37,7 @@ void mainBorder() {
 ///// DRAW MENU /////
 
 int drawMenu() {
+   selector = 8;
    clear();
    mainBorder();
    mvprintw(1, 13, " C C C       s s .   N     N     A     K   K   E E E  ");
@@ -80,6 +81,92 @@ int drawMenu() {
    	      }
    	      break;
          refresh();
+       default:
+            break;
+   	}
+    usleep(DELAY);
+   }
+}
+
+///// DRAW DIFFICULTY /////
+
+char* flavourText(int selection) {
+    switch(selection) {
+        case 1:
+            return "For new players, who are still learning to slither...";
+            break;
+        case 2:
+            return "For the average player, an every day apple eater!";
+            break;
+        case 3:
+            return "For the experienced player, a certified snake specialist!";
+            break;
+        case 4:
+            return "For the mad, the lost, and the insane... Why are you this way?";
+            break;
+    }
+}
+
+int drawDifficulty() {
+   flavour = 1;
+   clear();
+   mainBorder();
+   mvprintw(1, 13, " C C C       s s .   N     N     A     K   K   E E E  ");
+   mvprintw(2, 13, " C           s       N N   N   A   A   K   K   E      ");
+   mvprintw(3, 13, " C           s s s   N   N N   A A A   K K     E E    ");
+   mvprintw(4, 13, " C               s   N     N   A   A   K   K   E      ");
+   mvprintw(5, 13, " C C C   .   S s s   N     N   A   A   K   K   E E E  ");
+   mvprintw(8, 13, "                   DANGER  NOODLE");
+   attron(COLOR_PAIR(SNAKE));
+   mvprintw(10, 13, "                    GARDEN SNAKE");
+   attroff(COLOR_PAIR(SNAKE));
+   attron(COLOR_PAIR(SPEED2));
+   mvprintw(12, 13, "                     PIT  VIPER");
+   attroff(COLOR_PAIR(SPEED2));
+   attron(COLOR_PAIR(FOOD));
+   mvprintw(14, 13, "                    BLACK  MAMBA");
+   attroff(COLOR_PAIR(FOOD));
+   mvprintw(18, 3, "%s", flavourText(flavour));
+   while(choice == 0){
+   	mvprintw(selector, 28, "*");
+   	switch(getch()) {
+   	   case 'w':
+	         if(selector != 8){
+               mvprintw(selector, 28, " ");
+               selector -= 2;
+               flavour--;
+               mvprintw(18, 3, "                                                                 ");
+               mvprintw(18, 3, "%s", flavourText(flavour));
+            }
+   	      break;
+   	   case 's':
+   	      if(selector != 14){
+               mvprintw(selector, 28, " ");
+   	         selector +=2;
+             flavour++;
+               mvprintw(18, 3, "                                                                ");
+               mvprintw(18, 3, "%s", flavourText(flavour));
+            }
+   	      break;
+   	   case '\n':
+   	      switch(selector) {
+   	      case 8:
+   	         return 0;
+   	         break;
+   	      case 10:
+   	         return 1;
+   	         break;
+   	      case 12:
+   	         return 2;
+   	         break;
+   	      case 14:
+             return 4;
+   	         break;
+   	      }
+   	      break;
+         refresh();
+       default:
+            break;
    	}
     usleep(DELAY);
    }
@@ -161,7 +248,7 @@ void drawTurboMeter(int x, int y, bool alternator){
 
 ///// GAME OVER /////
 
-FILE* gameOver(int score, FILE* fp) {
+struct Player* gameOver(int score, FILE* fp, struct Player* nullFella, int mode) {
     char initials[2], temp;
     int i = 0;
     clear();
@@ -189,25 +276,40 @@ FILE* gameOver(int score, FILE* fp) {
     mvprintw(max_x/2 + 7, 6, "SCORE %d", score - 100);
     refresh();
 
-    fp = fopen("scores.txt", "a");
-    fprintf(fp, "\n   %s             %d", initials, score - 100);
-
+    fp = fopen("scores.txt", "w");
+    fprintf(fp, "");
     fclose(fp);
+    addPlayer(createPlayer(score - 100, initials[0], initials[1], mode), nullFella);
+    BEEG2smol(nullFella);
 
     getchar();
-    return fp;
+    return nullFella;
 }
 
 ///// DRAW SCOREBOARD /////
 
 void scoreboard(FILE* f) {
     int sx1 = 3, sx2 = sx1+1, sy1 = 25, sy2 = sy1+30;
+    char mode;
 
     clear();
     char str[250];
     f = fopen("scores.txt", "rw");
     while(fgets(str, 250, f) != NULL && sx2 < 19){
-            mvprintw(sx2, sy1, "%s", str);
+            mode = str[0];
+            if (mode == '1')
+                attron(COLOR_PAIR(SPEED1));
+            else if (mode == '2')
+                attron(COLOR_PAIR(SPEED2));
+            else if (mode == '4')
+                attron(COLOR_PAIR(FOOD));
+            mvprintw(sx2, sy1, "%s", str+1);
+            if (mode == '1')
+                attroff(COLOR_PAIR(SPEED1));
+            else if (mode == '2')
+                attroff(COLOR_PAIR(SPEED2));
+            else if (mode == '4')
+                attroff(COLOR_PAIR(FOOD));
         sx2++;
     }
     drawBorder("SCORES", sx1, sx2, sy1, sy2);

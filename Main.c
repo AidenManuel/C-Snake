@@ -4,6 +4,7 @@
 #include <curses.h>
 #include <unistd.h>
 #include "Sgmnt.h"
+#include "Scoreboard.h"
 #include "GP-Loop.c"
 #include "Animations.c"
 #define DELAY 100000
@@ -54,9 +55,9 @@ void initBruv() {  // Initializes all necessary curser things and madoodles
     }
 
     start_color();
-    init_pair(SNAKE, COLOR_GREEN, COLOR_GREEN);
+    init_pair(SNAKE, COLOR_GREEN, COLOR_BLACK);
     init_pair(FOOD, COLOR_RED, COLOR_BLACK);
-    init_pair(SPEED2, COLOR_BLUE, COLOR_BLUE);
+    init_pair(SPEED2, COLOR_BLUE, COLOR_BLACK);
     init_pair(SPEED3, COLOR_RED, COLOR_RED);
     init_pair(5, COLOR_MAGENTA, COLOR_MAGENTA);
     init_pair(6, COLOR_CYAN, COLOR_CYAN);
@@ -65,7 +66,8 @@ void initBruv() {  // Initializes all necessary curser things and madoodles
 ///// MAIN METHOD /////
 
 int main() {
-    int choice;
+    int choice, difficulty;
+    struct Player* nullFella = createPlayer(0, 'n', 'f', 0);
 
     // Creating Scores File
     FILE* fp = fopen("scores.txt", "rw");
@@ -82,12 +84,13 @@ int main() {
         choice = drawMenu();
         switch(choice) {
             case 1:
-                int l = mainLoop();
+                difficulty = drawDifficulty();
+                int l = mainLoop(difficulty);
                 usleep(DELAY);
                 mvprintw(max_x / 2, max_y / 2 - 3, "D E A D");
                 mvprintw(max_x / 2 + 1, max_y / 2 - 12, "press ANY KEY to continue");
                 refresh();
-                fp = gameOver(l, fp);
+                nullFella = gameOver(l, fp, nullFella, difficulty);
                 break;
             case 2:
                 scoreboard(fp);

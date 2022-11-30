@@ -35,10 +35,10 @@ int foodCollide(int fx, int fy, int sx, int sy) {
    return 0;
 }
 
-int mainLoop() {
+int mainLoop(int difficulty) {
     // declaring snake variables //
     
-    int sx = min_x + (height/2), sy = min_y + (width * 0.2), l = 1, lsim = 0, dx = 0, dy = 0, diff = 8, ch;
+    int sx = min_x + (height/2), sy = min_y + (width * 0.2), l = 1, lsim = 0, dx = 0, dy = 0, diff = difficulty, ch;
     bool alternator = 0;    
 
     // declaring food variables //
@@ -56,7 +56,7 @@ int mainLoop() {
     // drawing border and food in //
     mainBorder();
     drawBorder("C-SNAKE", min_x, max_x, min_y, max_y);
-    drawMeter(5, max_y + 5, diff);
+    drawMeter(5, max_y + 5, diff - difficulty * 2);
     mvprintw(max_x + 1, min_y + (width/2) - 4, "score : 000");
 
     refresh();
@@ -98,9 +98,9 @@ int mainLoop() {
             fy = 2 + min_y + (rand() % ((width - 2) / 2)) * 2;
             mvprintw(max_x + 1, min_y + (width/2) - 4, "score : %d", l);  // score
 
-            if(((l/100) > 1) && ((l/100) % 10 == 0) && (diff < 9)){
-                diff++;
-                drawMeter(5, max_y + 5, diff);
+            if(((l/100) > 1) && ((l/100) % (20/(difficulty+1)) == 0) && (diff < 9)){
+                diff += difficulty;
+                drawMeter(5, max_y + 5, diff - difficulty);
                 mvprintw(0,0,"%d", diff);
             }
         } else {
