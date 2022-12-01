@@ -48,7 +48,8 @@ int drawMenu() {
    mvprintw(8, 13, "                    MODE  SELECT");
    mvprintw(10, 13, "                     SCOREBOARD");
    mvprintw(12, 13, "                    INSTRUCTIONS");
-   mvprintw(14, 13, "                        QUIT");
+   mvprintw(14, 13, "                    CLEAR SCORES");
+   mvprintw(16, 13, "                        QUIT");
    while(choice == 0){
    	mvprintw(selector, 28, "*");
    	switch(getch()) {
@@ -59,25 +60,28 @@ int drawMenu() {
             }
    	      break;
    	   case 's':
-   	      if(selector != 14){
+   	      if(selector != 16){
                mvprintw(selector, 28, " ");
    	         selector +=2;
             }
    	      break;
    	   case '\n':
    	      switch(selector) {
-   	      case 8:
-   	         return 1;
-   	         break;
-   	      case 10:
-   	         return 2;
-   	         break;
-   	      case 12:
-   	         return 3;
-   	         break;
-   	      case 14:
+   	        case 8:
+   	            return 1;
+   	            break;
+   	        case 10:
+   	            return 2;
+   	            break;
+   	        case 12:
+   	            return 3;
+   	            break;
+   	        case 14:
                return 4;
-   	         break;
+   	            break;
+            case 16:  
+                return 5;
+                break;
    	      }
    	      break;
          refresh();

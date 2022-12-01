@@ -88,7 +88,7 @@ int main() {
     introAnimation();
 
     // The Program Loop
-    while(choice != 4){
+    while(choice != 5){
         choice = drawMenu();
         switch(choice) {
             case 1:
@@ -107,6 +107,11 @@ int main() {
                 AILoop();
                 break;
             case 4:
+                fp = fopen("scores.txt", "w");
+                fprintf(fp, "\n");
+                fclose(fp);
+                break;
+            case 5:
                 break;
         }
     }
