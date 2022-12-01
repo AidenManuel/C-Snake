@@ -28,11 +28,11 @@ void addPlayer(struct Player* newGuy, struct Player* oldFella){
         oldFella->smol = newGuy;
     } else if (newGuy->val < oldFella->val && oldFella->smol->val > newGuy->val){
         addPlayer(newGuy, oldFella->smol);
-    } else if (newGuy->val == oldFella->val) {
+    } else {
         newGuy->beeg = oldFella->beeg;
         oldFella->beeg = newGuy;
-    } else 
-        return;
+    }
+    return;
 }
 
 void BEEG2smol(struct Player* gamer){
