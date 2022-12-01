@@ -277,7 +277,7 @@ struct Player* gameOver(int score, FILE* fp, struct Player* nullFella, int mode)
     refresh();
 
     fp = fopen("scores.txt", "w");
-    fprintf(fp, "");
+    fprintf(fp, " ");
     fclose(fp);
     addPlayer(createPlayer(score - 100, initials[0], initials[1], mode), nullFella);
     BEEG2smol(nullFella);
@@ -325,8 +325,6 @@ void scoreboard(FILE* f) {
 
 void instructions() {
     int count = 1;
-    clear();
-    mainBorder();
     char str[1000];
     FILE* f = fopen("instructions.txt", "r");
     while(fgets(str, 1000, f) != NULL){
@@ -335,8 +333,5 @@ void instructions() {
     }
     refresh();
     fclose(f);
-
     mainBorder();
-
-    getchar();
 }

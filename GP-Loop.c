@@ -101,7 +101,6 @@ int mainLoop(int difficulty) {
             if(((l/100) > 1) && ((l/100) % (20/(difficulty+1)) == 0) && (diff < 9)){
                 diff += difficulty;
                 drawMeter(5, max_y + 5, diff - difficulty);
-                mvprintw(0,0,"%d", diff);
             }
         } else {
             snake = slither(&snake, sx, sy);

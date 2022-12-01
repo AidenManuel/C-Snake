@@ -6,6 +6,7 @@
 #include "Sgmnt.h"
 #include "Scoreboard.h"
 #include "GP-Loop.c"
+#include "AI-Loop.c"
 #include "Animations.c"
 #define DELAY 100000
 #define BigDELAY 400000
@@ -46,7 +47,6 @@ void initBruv() {  // Initializes all necessary curser things and madoodles
     cbreak();              // I genuinely don't know what most of these do, I just
     nodelay(stdscr, TRUE); // took them off of Dr. Kim's class example ¯\_(ツ)_/¯
     raw();
-    keypad(stdscr, TRUE);
 
     if (has_colors() == FALSE) {
         endwin();
@@ -66,12 +66,20 @@ void initBruv() {  // Initializes all necessary curser things and madoodles
 ///// MAIN METHOD /////
 
 int main() {
-    int choice, difficulty;
-    struct Player* nullFella = createPlayer(0, 'n', 'f', 0);
-
+    
     // Creating Scores File
     FILE* fp = fopen("scores.txt", "rw");
+
+    if(fp == NULL){
+        printf("scores.txt DOES NOT EXIST!!!");
+        exit(1);
+    }   
+
     fclose(fp);
+
+    int choice, difficulty;
+    struct Player* nullFella = createPlayer(0, 'n', 'f', 0);
+    nullFella = loadFile(nullFella);
 
     // Curses Init
     initBruv();
@@ -96,7 +104,7 @@ int main() {
                 scoreboard(fp);
                 break;
             case 3:
-                instructions();
+                AILoop();
                 break;
             case 4:
                 break;
