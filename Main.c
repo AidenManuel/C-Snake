@@ -107,9 +107,13 @@ int main() {
                 AILoop();
                 break;
             case 4:
-                fp = fopen("scores.txt", "w");
-                fprintf(fp, "\n");
-                fclose(fp);
+                if(drawConfirm()) {
+                    fp = fopen("scores.txt", "w");
+                    fprintf(fp, "\n");
+                    fclose(fp);
+                    free(nullFella);
+                    struct Player* nullFella = createPlayer(0, 'n', 'f', 0);
+                }
                 break;
             case 5:
                 break;
@@ -118,5 +122,6 @@ int main() {
 
     // End of Program
     endwin();
+    free(nullFella);
     return 0;
 }

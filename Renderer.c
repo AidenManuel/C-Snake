@@ -176,6 +176,53 @@ int drawDifficulty() {
    }
 }
 
+///// CLEAR SCORE /////
+
+int drawConfirm() {
+    selector = 31;
+   clear();
+   mainBorder();
+   mvprintw(1, 13, " C C C       s s .   N     N     A     K   K   E E E  ");
+   mvprintw(2, 13, " C           s       N N   N   A   A   K   K   E      ");
+   mvprintw(3, 13, " C           s s s   N   N N   A A A   K K     E E    ");
+   mvprintw(4, 13, " C               s   N     N   A   A   K   K   E      ");
+   mvprintw(5, 13, " C C C   .   S s s   N     N   A   A   K   K   E E E  ");
+   mvprintw(9, 13, "                     ARE YOU SURE?");
+   mvprintw(12, 34, "NO");
+   mvprintw(12, 43, "YES");
+   while(choice == 0){
+   	mvprintw(12, selector, "*");
+   	switch(getch()) {
+   	   case 'd':
+	         if(selector != 40){
+               mvprintw(12, selector, " ");
+               selector += 9;
+            }
+   	      break;
+   	   case 'a':
+   	      if(selector != 31){
+               mvprintw(12, selector, " ");
+   	         selector -= 9;
+            }
+   	      break;
+   	   case '\n':
+   	      switch(selector) {
+   	        case 31:
+   	            return 0;
+   	            break;
+            case 40:  
+                return 1;
+                break;
+   	      }
+   	      break;
+         refresh();
+       default:
+            break;
+   	}
+    usleep(DELAY);
+   }
+}
+
 ///// DRAW BORDER /////
 
 void drawBorder(char* title, int x1, int x2, int y1, int y2) {  // Draws the box which is representative of the play area

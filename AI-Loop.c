@@ -4,7 +4,7 @@
 #include <curses.h>
 #include <unistd.h>
 #include <string.h>
-#define DELAY 100000
+#define AIDELAY 100000
 #define SCALE 5000
 #define SNAKE 1
 #define FOOD 2
@@ -35,7 +35,7 @@ int AIfoodCollide(int fx, int fy, int sx, int sy) {
 }
 
 void AILoop() {
-    int ch;
+    int ch, speed = 1;
     
     while(ch != '\n'){
         // declaring AIsnake variables //
@@ -100,7 +100,18 @@ void AILoop() {
             if(collide(AIsnake) || min_x > sx || sx > max_x || min_y > sx || sy > max_y )
                 break;
 
-            usleep(DELAY);
+            switch(ch) {
+                case 't':
+                    if (speed != 20)
+                        speed++;
+                    break;
+                case 'g':
+                    if (speed != 1)
+                        speed--;
+                    break;
+            }
+
+            usleep(AIDELAY/speed);
             
             sx += dx; // update the head position and start again
             sy += dy;

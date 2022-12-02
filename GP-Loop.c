@@ -128,5 +128,6 @@ int mainLoop(int difficulty) {
         sy += dy;
         refresh();
     }
+    free(snake);
     return l;
 }
