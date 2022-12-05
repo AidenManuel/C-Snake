@@ -97,7 +97,7 @@ void AILoop() {
             l = draw(AIsnake);
             attroff(COLOR_PAIR(SNAKE));
             
-            if(collide(AIsnake) || min_x > sx || sx > max_x || min_y > sx || sy > max_y )
+            if(collide(AIsnake) || min_x == sx || sx > max_x || min_y == sx || sy > max_y )
                 break;
 
             switch(ch) {

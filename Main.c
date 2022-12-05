@@ -5,11 +5,12 @@
 #include <unistd.h>
 #include "Sgmnt.h"
 #include "Scoreboard.h"
-#include "GP-Loop.c"
 #include "AI-Loop.c"
+#include "GP-Loop.c"
 #include "Animations.c"
 #define DELAY 100000
 #define BigDELAY 400000
+#define DEFAULT 0
 #define SNAKE 1
 #define FOOD 2
 #define SPEED1 1
@@ -55,6 +56,7 @@ void initBruv() {  // Initializes all necessary curser things and madoodles
     }
 
     start_color();
+    init_pair(DEFAULT, COLOR_WHITE, COLOR_BLACK);
     init_pair(SNAKE, COLOR_GREEN, COLOR_BLACK);
     init_pair(FOOD, COLOR_RED, COLOR_BLACK);
     init_pair(SPEED2, COLOR_BLUE, COLOR_BLACK);
@@ -93,12 +95,12 @@ int main() {
         switch(choice) {
             case 1:
                 difficulty = drawDifficulty();
-                int l = mainLoop(difficulty);
+                int pts = mainLoop(difficulty);
                 usleep(DELAY);
                 mvprintw(max_x / 2, max_y / 2 - 3, "D E A D");
-                mvprintw(max_x / 2 + 1, max_y / 2 - 12, "press ANY KEY to continue");
+                mvprintw(max_x / 2 + 1, max_y / 2 - 10, "press ENTER to continue");
                 refresh();
-                nullFella = gameOver(l, fp, nullFella, difficulty);
+                nullFella = gameOver(pts, fp, nullFella, difficulty);
                 break;
             case 2:
                 scoreboard(fp);

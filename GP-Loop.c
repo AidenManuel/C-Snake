@@ -7,6 +7,7 @@
 #include "Renderer.c"
 #define DELAY 100000
 #define SCALE 5000
+#define DEFAULT 0
 #define SNAKE 1
 #define FOOD 2
 #define SPEED1 1
@@ -38,8 +39,32 @@ int foodCollide(int fx, int fy, int sx, int sy) {
 int mainLoop(int difficulty) {
     // declaring snake variables //
     
-    int sx = min_x + (height/2), sy = min_y + (width * 0.2), l = 1, lsim = 0, dx = 0, dy = 0, diff = difficulty, ch;
-    bool alternator = 0;    
+    int sx = min_x + (height/2), sy = min_y + (width * 0.2), l = 1, lsim = 0, dx = 0, dy = 0, diff = difficulty, ch, pts = l,ptScale, colour;
+    bool alternator = 0;  
+    char* title; 
+
+    switch(difficulty) {
+   	    case 0:
+   	        ptScale = 100;
+            title = "DANGER NOODLE";
+            colour = 0;
+   	        break;
+   	    case 1:
+   	        ptScale = 200;
+            title = "GARDEN SNAKE";
+            colour = 1;
+   	        break;
+   	    case 2:
+   	        ptScale = 400;
+            title = "PIT VIPER";
+            colour = 3;
+   	        break;
+   	    case 4:
+            ptScale = 600;
+            title = "BLACK MAMBA";
+            colour = 2;
+   	        break;
+   	} 
 
     // declaring food variables //
     
@@ -55,11 +80,17 @@ int mainLoop(int difficulty) {
     
     // drawing border and food in //
     mainBorder();
-    drawBorder("C-SNAKE", min_x, max_x, min_y, max_y);
+
+    attron(COLOR_PAIR(colour));
+    drawBorder(title, min_x, max_x, min_y, max_y);
+    attroff(COLOR_PAIR(colour));
+
     drawMeter(5, max_y + 5, diff - difficulty * 2);
     mvprintw(max_x + 1, min_y + (width/2) - 4, "score : 000");
 
     refresh();
+
+    // START OF GAME LOOP //
     while(ch != '1' && sx < max_x && sx > (min_x + 1) && sy < max_y && sy > min_y){
         ch = getch();  
         switch(ch) {   // This switch case handles player controls
@@ -96,9 +127,9 @@ int mainLoop(int difficulty) {
             fy_exp = fy;
             fx = 2 + min_x + rand() % (height - 2);
             fy = 2 + min_y + (rand() % ((width - 2) / 2)) * 2;
-            mvprintw(max_x + 1, min_y + (width/2) - 4, "score : %d", l);  // score
+            mvprintw(max_x + 1, min_y + (width/2) - 4, "score : %d", pts);  // score
 
-            if(((l/100) > 1) && ((l/100) % (20/(difficulty+1)) == 0) && (diff < 9)){
+            if(((l) > 1) && ((l) % (20/(difficulty+1)) == 0) && (diff < 9)){
                 diff += difficulty;
                 drawMeter(5, max_y + 5, diff - difficulty);
             }
@@ -117,7 +148,10 @@ int mainLoop(int difficulty) {
 
         attron(COLOR_PAIR(SNAKE));
         l = draw(snake);
+        pts = l * ptScale;
         attroff(COLOR_PAIR(SNAKE));
+
+
 
         if(collide(snake))
             break;
@@ -128,6 +162,8 @@ int mainLoop(int difficulty) {
         sy += dy;
         refresh();
     }
+    // END OF GAME LOOP //
+
     free(snake);
-    return l;
+    return pts - ptScale;
 }

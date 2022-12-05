@@ -28,23 +28,74 @@ void mainBorder() {
 
     mvaddch(20, 0, ACS_LLCORNER);
     for(int y = 1; y < 80; y++){
-        mvaddch(20, y, ACS_HLINE);   // bottom border
+        mvaddch(20, y, ACS_HLINE);            // bottom border
     }
     mvaddch(20, 80, ACS_LRCORNER);
     refresh();
 }
 
-///// DRAW MENU /////
+///// Draw Logo /////
 
-int drawMenu() {
-   selector = 8;
-   clear();
-   mainBorder();
+void drawLogo() {
    mvprintw(1, 13, " C C C       s s .   N     N     A     K   K   E E E  ");
    mvprintw(2, 13, " C           s       N N   N   A   A   K   K   E      ");
    mvprintw(3, 13, " C           s s s   N   N N   A A A   K K     E E    ");
    mvprintw(4, 13, " C               s   N     N   A   A   K   K   E      ");
    mvprintw(5, 13, " C C C   .   S s s   N     N   A   A   K   K   E E E  ");
+}
+
+///// DRAW LABEL /////
+
+void drawLabel(int x, int y, char* label) {
+    mvaddch(x, y, ACS_ULCORNER);
+    mvaddch(x, y + 1, ACS_HLINE);
+    mvaddch(x, y + 2, ACS_HLINE);
+    mvaddch(x, y + 3, ACS_URCORNER);
+    mvaddch(x + 1, y, ACS_VLINE);
+    mvprintw(x + 1, y + 1, label);
+    mvaddch(x + 1, y + 3, ACS_VLINE);
+    mvaddch(x + 2, y, ACS_LLCORNER);
+    mvaddch(x + 2, y + 1, ACS_HLINE);
+    mvaddch(x + 2, y + 2, ACS_HLINE);
+    mvaddch(x + 2, y + 3, ACS_LRCORNER);
+}
+
+void drawEnter(int x, int y) {
+    mvaddch(x, y, ACS_ULCORNER);
+    mvaddch(x, y + 1, ACS_HLINE);
+    mvaddch(x, y + 2, ACS_HLINE);
+    mvaddch(x, y + 3, ACS_LRCORNER);
+    mvaddch(x - 1, y + 3, ACS_ULCORNER);
+    mvaddch(x - 1, y + 4, ACS_HLINE);
+    mvaddch(x - 1, y + 5, ACS_HLINE);
+    mvaddch(x - 1, y + 6, ACS_URCORNER);
+    mvaddch(x, y + 6, ACS_VLINE);
+    mvaddch(x + 1, y, ACS_VLINE);
+    mvprintw(x + 1, y + 1, "ENTER");
+    mvaddch(x + 1, y + 6, ACS_VLINE);
+    mvaddch(x + 2, y, ACS_LLCORNER);
+    mvaddch(x + 2, y + 1, ACS_HLINE);
+    mvaddch(x + 2, y + 2, ACS_HLINE);
+    mvaddch(x + 2, y + 3, ACS_HLINE);
+    mvaddch(x + 2, y + 4, ACS_HLINE);
+    mvaddch(x + 2, y + 5, ACS_HLINE);
+    mvaddch(x + 2, y + 6, ACS_LRCORNER);
+}
+
+///// DRAW MENU /////
+
+int drawMenu() {
+   int cx = 8, cy = 53;
+   selector = 8;
+   clear();
+   mainBorder();
+   drawLogo();
+   drawLabel(cx + 2, cy + 5, ">W");
+   drawLabel(cx + 5, cy + 1, ">A");
+   drawLabel(cx + 5, cy + 5, ">S");
+   drawLabel(cx + 5, cy + 9, ">D");
+   drawEnter(cx + 4, cy + 15);
+   drawBorder("CONTROL KEYS", cx, cx + 8, cy, cy + 22);
    mvprintw(8, 13, "                    MODE  SELECT");
    mvprintw(10, 13, "                     SCOREBOARD");
    mvprintw(12, 13, "                    INSTRUCTIONS");
@@ -115,11 +166,7 @@ int drawDifficulty() {
    flavour = 1;
    clear();
    mainBorder();
-   mvprintw(1, 13, " C C C       s s .   N     N     A     K   K   E E E  ");
-   mvprintw(2, 13, " C           s       N N   N   A   A   K   K   E      ");
-   mvprintw(3, 13, " C           s s s   N   N N   A A A   K K     E E    ");
-   mvprintw(4, 13, " C               s   N     N   A   A   K   K   E      ");
-   mvprintw(5, 13, " C C C   .   S s s   N     N   A   A   K   K   E E E  ");
+   drawLogo();
    mvprintw(8, 13, "                   DANGER  NOODLE");
    attron(COLOR_PAIR(SNAKE));
    mvprintw(10, 13, "                    GARDEN SNAKE");
@@ -301,9 +348,12 @@ void drawTurboMeter(int x, int y, bool alternator){
 
 struct Player* gameOver(int score, FILE* fp, struct Player* nullFella, int mode) {
     char initials[2], temp;
-    int i = 0;
+    int i = 0; 
+
+    while(temp != '\n')
+        temp = getch();
+
     clear();
-    getchar();
     mainBorder();
     mvprintw(max_x/2 - 2, 3, "G G G    A    M       M  E E E       O     V   V   E E E   R R");
     mvprintw(max_x/2 - 1, 3, "G      A   A  M M   M M  E         O   O   V   V   E       R   R");
@@ -324,13 +374,13 @@ struct Player* gameOver(int score, FILE* fp, struct Player* nullFella, int mode)
     }
     
     mvprintw(max_x/2 + 6, 27, "%s", initials);
-    mvprintw(max_x/2 + 7, 6, "SCORE %d", score - 100);
+    mvprintw(max_x/2 + 7, 6, "SCORE %d", score);
     refresh();
 
     fp = fopen("scores.txt", "w");
     fprintf(fp, " ");
     fclose(fp);
-    addPlayer(createPlayer(score - 100, initials[0], initials[1], mode), nullFella);
+    addPlayer(createPlayer(score, initials[0], initials[1], mode), nullFella);
     BEEG2smol(nullFella);
 
     getchar();

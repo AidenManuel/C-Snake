@@ -85,7 +85,7 @@ int draw(struct Sgmnt* head) {
         mvaddch((head)->x, (head)->y, ACS_CKBOARD);
         mvaddch((head)->x, (head)->y + 1, ACS_CKBOARD);
         head = (head)->next;
-        count += 100;
+        count += 1;
     }
     refresh();
     return count;
